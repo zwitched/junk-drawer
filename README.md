@@ -25,7 +25,7 @@ Served over http(s) it also installs as an app (manifest + service worker) and w
 | Pick something | tap it | click |
 | Hand it over | tap it again, press Give, or drag it onto the note | same |
 | Move things | drag (fling to slide) | drag |
-| Rotate | two-finger twist, or the rotate buttons | mouse wheel while holding, or the buttons |
+| Rotate | two-finger twist, or the rotate buttons | mouse wheel on the selected thing, or the buttons |
 | Store / bring back | drag into the tray, or the Tray button | same |
 | Closer look | hold your finger on it | hold the button down |
 | Untangle | tap the knot, or shake the lump while dragging | same |

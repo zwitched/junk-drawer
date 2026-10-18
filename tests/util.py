@@ -28,11 +28,11 @@ class Touch:
   def __init__(s,pg):s.pg=pg;s.cdp=None
   async def init(s):s.cdp=await s.pg.context.new_cdp_session(s.pg);return s
   async def send(s,kind,pts):await s.cdp.send('Input.dispatchTouchEvent',{'type':kind,'touchPoints':[{'x':x,'y':y,'id':i} for i,(x,y) in pts]})
-  async def drag(s,a,b,steps=12,hold=0,dt=16):
+  async def drag(s,a,b,steps=12,hold=0,dt=16,end_hold=60):
     await s.send('touchStart',[(0,a)])
     if hold:await s.pg.wait_for_timeout(hold)
     for k in range(1,steps+1):
       t=k/steps;await s.send('touchMove',[(0,(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t))]);await s.pg.wait_for_timeout(dt)
-    await s.pg.wait_for_timeout(60);await s.send('touchEnd',[])
+    await s.pg.wait_for_timeout(end_hold);await s.send('touchEnd',[])
   async def tap(s,a,hold=40):
     await s.send('touchStart',[(0,a)]);await s.pg.wait_for_timeout(hold);await s.send('touchEnd',[])

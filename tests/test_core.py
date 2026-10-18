@@ -71,10 +71,10 @@ async def main():
     aft=await E(f"(()=>{{const o={S};return {{held:o.held,lift:o.lift}}}})()");t.chk('release: object settles (lift back to 0)',aft['held']==0 and aft['lift']<.05,aft)
     t.chk('drag counted in stats',await E("JD.save.stats.moved")>=1)
     # ---- fling + walls
-    await E(f"(()=>{{const o={S};o.x=150;o.y=200;}})()");a=await E(f"BOT.pt({S})")
+    await E(f"(()=>{{const o={S};o.x=110;o.y=200;o.vx=o.vy=0;for(const q of WD.live())if(q!==o&&!WD.group(o).includes(q)&&Math.abs(q.y-200)<70)q.y=q.y<200?60:380;}})()");await pg.wait_for_timeout(100);a=await E(f"BOT.pt({S})")
     await tc.send('touchStart',[(0,a)])
     for k in range(1,7):
-      await tc.send('touchMove',[(0,(a[0]+22*k,a[1]))]);await pg.wait_for_timeout(16)
+      await tc.send('touchMove',[(0,(a[0]+34*k,a[1]))]);await pg.wait_for_timeout(16)
     await tc.send('touchEnd',[]);await pg.wait_for_timeout(30)
     v=await E(f"Math.hypot({S}.vx,{S}.vy)");t.chk('fling: released object keeps sliding',v>150,v)
     await pg.wait_for_timeout(1500);bd=await E(f"WD.bounds({S})");t.chk('fling: walls keep it inside the drawer',bd[0]>=-2 and bd[2]<=await E("WD.W")+2,bd)
@@ -87,12 +87,12 @@ async def main():
     await E("JD.start('quick')");await pg.wait_for_timeout(900);await E("JD.M.time=999")
     # ---- stacking: drop on top
     r=await E("""(()=>{const L=WD.live().filter(o=>!o.mag&&!o.tang&&!o.d.magnet&&!o.d.fragile);const a=L[0],b=L[1];a.x=100;a.y=150;a.r=0;b.x=230;b.y=300;b.r=0;BOT.run(.1);return {a:RD.toScreen(a.x,a.y),b:BOT.pt(b),ua:a.uid,ub:b.uid}})()""")
-    await tc.drag(r['b'],r['a'],steps=12);await pg.wait_for_timeout(500)
-    z=await E(f"(()=>{{const a=WD.objs.find(o=>o.uid=={r['ua']}),b=WD.objs.find(o=>o.uid=={r['ub']});return [a.z,b.z,WD.pick(a.x,a.y)===b]}})()")
+    await tc.drag(r['b'],r['a'],steps=12,end_hold=180);await pg.wait_for_timeout(500)
+    z=await E(f"(()=>{{const a=WD.objs.find(o=>o.uid=={r['ua']}),b=WD.objs.find(o=>o.uid=={r['ub']});return [a.z,b.z,WD.overlap(a,b)&&WD.coverers(a).includes(b)]}})()")
     t.chk('stacking: dropped object lands on top of the other one',z[1]>z[0] and z[2],z)
     # ---- uncovering
     r=await E("""(()=>{const L=WD.live().filter(o=>!o.mag&&!o.tang&&!o.d.magnet&&!o.d.fragile&&!o.d.rare);const t=L.find(o=>o.d.id!=='cable'&&o.d.w*o.d.h<2000);const t0=t;for(const o of WD.live())if(o!==t)o.x=-999;t.x=156;t.y=220;t.r=0;
-      const big=L.filter(o=>o!==t&&o.d.w*o.d.h>t.d.w*t.d.h);for(let i=0;i<3;i++){const c=big[i];c.x=156+(i-1)*6;c.y=220+(i-1)*5;c.r=i;WD.raise(c);}return {uid:t.uid,vis:WD.vis(t)}})()""")
+      const big=L.filter(o=>o!==t).sort((p,q)=>Math.min(q.d.w,q.d.h)*q.d.w*q.d.h-Math.min(p.d.w,p.d.h)*p.d.w*p.d.h);for(let i=0;i<3;i++){const c=big[i];c.x=156+(i-1)*6;c.y=220+(i-1)*5;c.r=i;WD.raise(c);}return {uid:t.uid,vis:WD.vis(t)}})()""")
     S2=f"WD.objs.find(o=>o.uid=={r['uid']})"
     t.chk('setup: target is buried',r['vis']<.35,r)
     for k in range(5):

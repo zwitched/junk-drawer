@@ -11,7 +11,8 @@ window.BOT={log:[],
   if(t.mag){const mg=t.mag;JD.unstick(t);const p=BOT.farSpot(mg);t.x=p[0];t.y=p[1];WD.raise(t);return 'unstick';}
   const cov=WD.coverers(t);
   if(!cov.length||WD.vis(t)>.5){JD.tapObj(t);if(JD.sel===t)JD.tapObj(t);return 'submit';}
-  let m=cov[0];if(m.mag)m=m.mag;if(m.tang&&m.tang.b===m)m=m.tang.a;
+  if(t.d.magnet&&cov.every(q=>q.mag===t)){JD.tapObj(t);if(JD.sel===t)JD.tapObj(t);return 'submit';}
+  let m=cov[0];if(m.mag===t){JD.unstick(m);const p=BOT.farSpot(t);m.x=p[0];m.y=p[1];WD.raise(m);return 'unstick';}if(m.mag)m=m.mag;if(m.tang&&m.tang.b===m)m=m.tang.a;
   if(WD.tray.includes(null)&&!m.tang&&!m.d.magnet&&!WD.objs.some(q=>q.mag===m)){if(JD.toTray(m)==='ok')return 'tray';}
   const p=BOT.farSpot(t);const dx=p[0]-m.x,dy=p[1]-m.y;for(const q of WD.group(m)){q.x+=dx;q.y+=dy;}WD.raise(m);return 'move';},
  // run game time forward (no rendering): dt steps of 1/60 s
