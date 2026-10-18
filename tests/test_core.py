@@ -86,7 +86,7 @@ async def main():
     t.chk('collision: a sliding object nudges what it runs into',r['moved']>4,r)
     await E("JD.start('quick')");await pg.wait_for_timeout(900);await E("JD.M.time=999")
     # ---- stacking: drop on top
-    r=await E("""(()=>{const L=WD.live().filter(o=>!o.mag&&!o.tang&&!o.d.magnet&&!o.d.fragile);const a=L[0],b=L[1];a.x=100;a.y=150;a.r=0;b.x=230;b.y=300;b.r=0;BOT.run(.1);return {a:RD.toScreen(a.x,a.y),b:BOT.pt(b),ua:a.uid,ub:b.uid}})()""")
+    r=await E("""(()=>{const L=WD.live().filter(o=>!o.mag&&!o.tang&&!o.d.magnet&&!o.d.fragile);const a=L[0],b=L[1];a.x=100;a.y=150;a.r=0;b.x=230;b.y=300;b.r=0;WD.raise(a);WD.raise(b);BOT.run(.1);return {a:RD.toScreen(a.x,a.y),b:BOT.pt(b),ua:a.uid,ub:b.uid}})()""")
     await tc.drag(r['b'],r['a'],steps=12,end_hold=180);await pg.wait_for_timeout(500)
     z=await E(f"(()=>{{const a=WD.objs.find(o=>o.uid=={r['ua']}),b=WD.objs.find(o=>o.uid=={r['ub']});return [a.z,b.z,WD.overlap(a,b)&&WD.coverers(a).includes(b)]}})()")
     t.chk('stacking: dropped object lands on top of the other one',z[1]>z[0] and z[2],z)
