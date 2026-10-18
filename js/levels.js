@@ -71,7 +71,7 @@ function bury(t,k,R,clutter,avail){const want=VIS_FOR_BURY[Math.min(k,6)];let us
  const big=clutter.filter(o=>o!==t&&o.d.w*o.d.h>=t.d.w*t.d.h*.5&&!o.tang&&!o.mag&&!o.d.magnet&&!o.d.fragile);
  R.shuffle(big);
  while(guard++<12&&(used<k||WD.vis(t)>want)){let o=big.pop();
-  if(!o){const pool=avail.filter(d=>!d.fragile&&!d.magnet&&!d.tangler&&!(L.excl&&L.excl.has(d.id))&&d.id!==t.d.id&&d.w*d.h>=t.d.w*t.d.h*.6);o=WD.add(R.pick(pool.length?pool:avail),0,0,0);}
+  if(!o){if(L.cap&&WD.live().length>=L.cap)break;const pool=avail.filter(d=>!d.fragile&&!d.magnet&&!d.tangler&&!(L.excl&&L.excl.has(d.id))&&d.id!==t.d.id&&d.w*d.h>=t.d.w*t.d.h*.6);o=WD.add(R.pick(pool.length?pool:avail),0,0,0);}
   o.x=t.x+(R()-.5)*t.d.w*.5;o.y=t.y+(R()-.5)*t.d.h*.5;o.r=R()*Math.PI*2;if(o.z<t.z){o.z=++WD.zc;WD.sort();}inside(o);used++;}
  return WD.vis(t);}
 L.bury=bury;
