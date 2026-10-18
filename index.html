@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#3b2617">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Somebody needs something. It's in the junk drawer. Find it.">
+<title>Junk Drawer</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="rotate"><div><b>Turn your phone upright.</b><span>The drawer only fits standing up.</span></div></div>
+
+<div id="hud" class="hidden">
+ <div id="topbar">
+  <button id="bPause" class="ib" aria-label="Pause"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg></button>
+  <div id="scoreBox"><span id="score">0</span><span id="mult"></span></div>
+  <div id="strikes"></div>
+  <div id="clock">1:00</div>
+ </div>
+ <div id="note"><div id="pin"></div><div id="who"></div><div id="ask"></div><div id="slots"></div><div id="reply"></div><div id="stamp">GOT IT</div><div id="timerBar"><i></i></div></div>
+</div>
+
+<div id="bar" class="hidden">
+ <div id="hintTxt">Tap to pick. Drag to move. Hold to look closer.</div>
+ <div id="acts">
+  <button id="bRotL" class="ab" aria-label="Rotate left"><svg viewBox="0 0 24 24"><path d="M7 7a7 7 0 1 1-2.2 7.6" fill="none" stroke-width="2.6" stroke-linecap="round"/><path d="M3 4v6h6z"/></svg></button>
+  <button id="bRotR" class="ab" aria-label="Rotate right"><svg viewBox="0 0 24 24"><path d="M17 7a7 7 0 1 0 2.2 7.6" fill="none" stroke-width="2.6" stroke-linecap="round"/><path d="M21 4v6h-6z"/></svg></button>
+  <button id="bTray" class="ab wide">Tray</button>
+  <button id="bGive" class="ab give">Hand it over</button>
+ </div>
+</div>
+
+<div id="toasts"></div>
+<div id="inspect" class="hidden"><div id="insName"></div><div id="insDesc"></div></div>
+<div id="tut" class="hidden"></div>
+<div id="banner" class="hidden"></div>
+
+<!-- screens -->
+<div class="screen" id="sTitle">
+ <div class="logo"><div class="logoTag"><span>JUNK</span><span>DRAWER</span></div><div class="sub">Somebody needs something.<br>It's in here somewhere.</div></div>
+ <div class="col"><button class="btn big primary" id="bPlay">Play</button><button class="btn" id="bTitleMenu">Menu</button></div>
+ <div class="foot">Sound on? Tap to start.</div>
+</div>
+<div class="screen hidden" id="sMenu"><div class="panel">
+ <h1>Junk Drawer</h1>
+ <button class="btn big primary" data-go="modes">Play</button>
+ <button class="btn" id="bDaily2">Daily Drawer</button>
+ <div class="row"><button class="btn" data-go="unlocks">Collection</button><button class="btn" data-go="ach">Achievements</button></div>
+ <div class="row"><button class="btn" data-go="stats">Stats</button><button class="btn" data-go="settings">Settings</button></div>
+ <button class="btn small" id="bHow">How to play</button>
+</div></div>
+<div class="screen hidden" id="sModes"><div class="panel tall"><h2>Pick a drawer</h2><div id="modeList"></div><button class="btn small back" data-go="menu">Back</button></div></div>
+<div class="screen hidden" id="sChal"><div class="panel tall"><h2>The Big Cleanout</h2><div class="subh" id="chalStars"></div><div id="chalGrid"></div><button class="btn small back" data-go="modes">Back</button></div></div>
+<div class="screen hidden" id="sIntro"><div class="panel"><div class="num" id="inNum"></div><h2 id="inName"></h2><p id="inText"></p><div id="inMeta"></div><button class="btn big primary" id="bInStart">Start</button><button class="btn small" data-go="chal">Back</button></div></div>
+<div class="screen hidden" id="sPause"><div class="panel"><h2>Paused</h2><p class="subh" id="pauseInfo"></p><button class="btn big primary" id="bResume">Resume</button><button class="btn" id="bRestart">Restart</button><button class="btn" id="bPauseSet">Settings</button><button class="btn" id="bQuit">Quit to menu</button></div></div>
+<div class="screen hidden" id="sResults"><div class="panel tall"><h2 id="resTitle"></h2><div id="resStars"></div><div id="resScore"></div><div id="resBest"></div><div id="resLines"></div><div id="resAch"></div><div class="row" id="resBtns"></div></div></div>
+<div class="screen hidden" id="sSettings"><div class="panel"><h2>Settings</h2><div id="setList"></div><button class="btn small" id="bTut">Replay tutorial</button><button class="btn small danger" id="bReset">Reset progress</button><button class="btn small back" id="bSetBack">Back</button></div></div>
+<div class="screen hidden" id="sAch"><div class="panel tall"><h2>Achievements</h2><div class="subh" id="achCount"></div><div id="achList" class="scroll"></div><button class="btn small back" data-go="menu">Back</button></div></div>
+<div class="screen hidden" id="sUnlocks"><div class="panel tall"><h2>Collection</h2><div id="unlockList" class="scroll"></div><button class="btn small back" data-go="menu">Back</button></div></div>
+<div class="screen hidden" id="sStats"><div class="panel tall"><h2>Stats</h2><div id="statList" class="scroll"></div><button class="btn small back" data-go="menu">Back</button></div></div>
+<div class="screen hidden" id="sConfirm"><div class="panel"><h2 id="cfTitle"></h2><p id="cfText"></p><div class="row"><button class="btn danger" id="cfYes">Yes</button><button class="btn" id="cfNo">No</button></div></div></div>
+
+<script src="js/rng.js"></script>
+<script src="js/art.js"></script>
+<script src="js/objects.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/world.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/progress.js"></script>
+<script src="js/scoring.js"></script>
+<script src="js/render.js"></script>
+<script src="js/input.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
