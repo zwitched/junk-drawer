@@ -14,5 +14,9 @@ async def main():
     await E("JD.save.stats.found=12;JD.save.stats.bestStreak=6;JD.save.stats.broken=1;JD.save.ach={first:1,streak5:1,crunch:1,hidden:1,combo:1,three:1};JD.go('ach')");await pg.wait_for_timeout(200);await pg.screenshot(path=S+'achievements.png')
     await E("JD.go('settings')");await pg.wait_for_timeout(200);await pg.screenshot(path=S+'settings.png')
     await E("JD.intro(0)");await pg.wait_for_timeout(200);await pg.screenshot(path=S+'challenge_intro.png')
+    for i,nm in [(6,'magnet'),(8,'tangle')]:
+      await E(f"JD.start('cleanout',{{i:{i}}})");await pg.wait_for_timeout(1500)
+      print(nm,await pg.text_content('#ask'),await E("[WD.objs.filter(o=>o.mag).length,WD.tangles.length]"))
+      await pg.screenshot(path=S+nm+'.png')
     await b.close();print('errors',errs)
 asyncio.run(main())
